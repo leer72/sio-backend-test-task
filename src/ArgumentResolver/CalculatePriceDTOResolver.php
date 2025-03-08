@@ -3,6 +3,7 @@
 namespace App\ArgumentResolver;
 
 use App\DTO\CalculatePriceDTO;
+use App\Validation\CalculatePriceDTOValidator;
 use Exception;
 use Generator;
 
@@ -23,7 +24,7 @@ class CalculatePriceDTOResolver extends ArgumentResolver
         $this->validate($params);
 
         yield new CalculatePriceDTO(
-            productId: $params['productId'],
+            productId: $params['product'],
             taxNumber: $params['taxNumber'],
             couponCode: $params['couponCode'],
         );

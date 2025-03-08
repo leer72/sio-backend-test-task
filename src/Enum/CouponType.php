@@ -2,14 +2,17 @@
 
 namespace App\Enum;
 
-enum CouponType: int
+enum CouponType: string
 {
-    case FIXED_DISCOUNT = 1;
+    case FIXED_DISCOUNT = 'D';
 
-    case PERCENT_DISCOUNT = 2;
+    case PERCENT_DISCOUNT = 'P';
 
-    public const array VALID_VALUES = [
-        self::FIXED_DISCOUNT,
-        self::PERCENT_DISCOUNT,
-    ];
+    public static function getValues(): array
+    {
+        return array_map(
+            fn (CouponType $couponType) => $couponType->value,
+            self::cases(),
+        );
+    }
 }

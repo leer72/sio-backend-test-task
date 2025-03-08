@@ -7,7 +7,6 @@ use Exception;
 use Generator;
 use JsonException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -99,11 +98,10 @@ abstract class ArgumentResolver implements ValueResolverInterface
      */
     protected function throwValidationError(array $errors): void
     {
-        $message = 'Ошибки валидации:' . implode('; ', $errors);
+        $message = 'Ошибки валидации: ' . implode('; ', $errors);
 
-        throw new Exception(
+        throw new BadRequestHttpException(
             message: $message,
-            code: Response::HTTP_BAD_REQUEST,
         );
     }
 

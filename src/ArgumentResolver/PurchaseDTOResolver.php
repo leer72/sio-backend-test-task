@@ -3,6 +3,7 @@
 namespace App\ArgumentResolver;
 
 use App\DTO\PurchaseDTO;
+use App\Validation\PurchaseDTOValidator;
 use Exception;
 use Generator;
 

@@ -86,7 +86,7 @@ abstract class AbstractValidator
         return [
             new Assert\Regex([
                 'pattern' => '/^(P|D)\d{1,9}$/',
-                'message' => 'Неверный налоговый номер',
+                'message' => 'Неверный код купона',
             ]),
         ];
     }
