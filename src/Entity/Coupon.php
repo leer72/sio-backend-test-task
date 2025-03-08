@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\CouponType;
+use App\Repository\Coupon\CouponRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
