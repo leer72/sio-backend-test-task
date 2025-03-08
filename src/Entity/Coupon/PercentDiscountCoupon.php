@@ -11,7 +11,8 @@ class PercentDiscountCoupon extends Coupon
 {
     public function calcDiscount(int $price): float
     {
-        if ($this->getValue() >=100) {
+        //Если скидка 100% и более, то цена равна 0
+        if ($this->getValue() >= 100) {
             return 0.0;
         }
 

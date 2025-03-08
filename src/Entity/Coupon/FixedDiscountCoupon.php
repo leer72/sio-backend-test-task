@@ -11,7 +11,7 @@ class FixedDiscountCoupon extends Coupon
 {
     public function calcDiscount(int $price): float
     {
-        if ($price - $this->getValue()) {
+        if ($price - $this->getValue() > 0) {
             return (float) ($price - $this->getValue());
         }
 

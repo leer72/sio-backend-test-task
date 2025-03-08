@@ -12,4 +12,11 @@ class CalculatePriceDTOValidator extends AbstractValidator
             'couponCode' => $this->getCouponRules(),
         ];
     }
+
+    protected function getOptionalFields(): array
+    {
+        return [
+            'couponCode',
+        ];
+    }
 }

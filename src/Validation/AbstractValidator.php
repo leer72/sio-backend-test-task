@@ -11,21 +11,38 @@ abstract class AbstractValidator
 {
     private const string MISSING_FIELDS_MESSAGE = 'Значение обязательно к заполнению';
 
+    protected array $optionalFields;
+
     public function __construct(
         private readonly ValidatorInterface $validator,
     ) {
+        $this->optionalFields = $this->getOptionalFields();
     }
 
     abstract protected function getConstraints(): array;
 
+    abstract protected function getOptionalFields(): array;
+
     public function validate(array $requestFields): array
     {
+        $constraints = array_filter(
+            $this->getConstraints(),
+            function (string $fieldName) use ($requestFields): bool {
+                if (!in_array($fieldName, $this->optionalFields)) {
+                    return true;
+                }
+
+                return key_exists($fieldName, $requestFields);
+            },
+            ARRAY_FILTER_USE_KEY,
+        );
+
         $errors = [];
 
         $violations = $this->validator->validate(
             $requestFields,
             new Collection(
-                fields: $this->getConstraints(),
+                fields: $constraints,
                 missingFieldsMessage: self::MISSING_FIELDS_MESSAGE,
             ),
         );

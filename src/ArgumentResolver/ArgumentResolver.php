@@ -47,12 +47,14 @@ abstract class ArgumentResolver implements ValueResolverInterface
         }
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): Generator
+    public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         $this->argument = $argument;
         $this->request = $request;
 
-        if (!$this->supports($argument)) return [];
+        if (!$this->supports($argument)) {
+            return [];
+        }
 
         return $this->handle();
     }

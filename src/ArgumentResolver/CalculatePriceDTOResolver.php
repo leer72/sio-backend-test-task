@@ -26,7 +26,7 @@ class CalculatePriceDTOResolver extends ArgumentResolver
         yield new CalculatePriceDTO(
             productId: $params['product'],
             taxNumber: $params['taxNumber'],
-            couponCode: $params['couponCode'],
+            couponCode: $params['couponCode'] ?? null,
         );
     }
 

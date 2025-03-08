@@ -3,18 +3,18 @@
 namespace App\Repository\Coupon;
 
 use App\Entity\Coupon\Coupon;
-use App\Repository\AbstractRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 
-class CouponRepository extends AbstractRepository
+class CouponRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Coupon::class);
     }
 
-    public function getByValue(int $value)
+    public function getByValue(int $value): Coupon
     {
         $coupon = $this->findOneBy(['value' => $value]);
 

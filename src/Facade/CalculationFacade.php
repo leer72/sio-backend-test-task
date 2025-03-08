@@ -20,7 +20,7 @@ class CalculationFacade
      */
     public function getFinalProductPrice(
         int $productId,
-        string $couponCode,
+        ?string $couponCode,
         string $taxNumber,
     ): float {
         return $this->taxNumberService->getPriceWithTax(

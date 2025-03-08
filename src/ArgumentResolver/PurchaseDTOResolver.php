@@ -24,9 +24,9 @@ class PurchaseDTOResolver extends ArgumentResolver
         $this->validate($params);
 
         yield new PurchaseDTO(
-            productId: $params['productId'],
+            productId: $params['product'],
             taxNumber: $params['taxNumber'],
-            couponCode: $params['couponCode'],
+            couponCode: $params['couponCode'] ?? null,
             paymentProcessor: $params['paymentProcessor'],
         );
     }

@@ -39,15 +39,25 @@ class CouponService
     /**
      * @throws Exception
      */
-    public function getPriceWithDiscount(string $couponCode, int $price): float
+    public function getPriceWithDiscount(?string $couponCode, int $price): float
     {
+        if (is_null($couponCode)) {
+            return $price;
+        }
+
         //Получаем репозиторий нужного типа для поиска по дискриминатору
         $repository = $this->entityManager->getRepository(
             Coupon::COUPON_DISCRIMINATOR_MAP[$this->getType($couponCode)->value]
         );
 
-        return $repository
+        $price = $repository
             ->getByValue($this->getCouponValue($couponCode))
             ->calcDiscount($price);
+
+        if (!($price > 0)) {
+            throw new Exception('Что-то пошло не так. Цена должна быть больше нуля.');
+        }
+
+        return $price;
     }
 }
