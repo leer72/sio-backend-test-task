@@ -25,9 +25,12 @@ class TaxNumberService
 
     public function getPriceWithTax(string $taxNumber, float $price): float
     {
-        return $price
-            + $price
-            * TaxNumberService::TAX_MAP[$this->resolveCountryByCode($taxNumber)->value]
-            / 100;
+        return round(
+            num: $price
+                + $price
+                * TaxNumberService::TAX_MAP[$this->resolveCountryByCode($taxNumber)->value]
+                / 100,
+            precision: 2
+        );
     }
 }

@@ -52,7 +52,7 @@ abstract class AbstractValidator
          */
         foreach ($violations as $violation) {
             $field = preg_replace(['/\]\[/', '/\[|\]/'], ['.', ''], $violation->getPropertyPath());
-            $errors[$field] = $violation->getMessage();
+            $errors[$field] = $field . '. ' . $violation->getMessage();
         }
 
         return $errors;

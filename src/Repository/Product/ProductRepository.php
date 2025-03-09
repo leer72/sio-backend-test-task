@@ -20,7 +20,7 @@ class ProductRepository extends ServiceEntityRepository
 
         if (is_null($product)) {
             throw new EntityNotFoundException(
-                message: 'Product not found',
+                message: "Товар с id {$id} не найден",
             );
         }
 

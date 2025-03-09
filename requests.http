@@ -1,3 +1,4 @@
+### Больше кейсов реализовано в тестах
 ### Calculate Price
 POST http://127.0.0.1:8337/calculate-price
 Accept: application/json
@@ -19,4 +20,71 @@ Content-Type: application/json
   "taxNumber": "IT12345678900",
   "couponCode": "D15",
   "paymentProcessor": "paypal"
+}
+
+### Расчет цены со скидкой в процентах
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "DE123456789",
+  "couponCode": "P35"
+}
+
+### Расчет цены с неправильным налоговым номером
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "DE9123456789",
+  "couponCode": "D15"
+}
+
+### Расчет цены с неправильным идентификатором товара
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 4,
+  "taxNumber": "DE123456789",
+  "couponCode": "D15"
+}
+
+### Расчет цены с неправильным купоном
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "DE123456789",
+  "couponCode": "A15"
+}
+
+### Совершить покупку с платежным процессором Stripe
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "IT12345678900",
+  "paymentProcessor": "stripe"
+}
+
+### Совершить покупку с платежным процессором Stripe (цена меньше 100)
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 2,
+  "taxNumber": "IT12345678900",
+  "couponCode": "D15",
+  "paymentProcessor": "stripe"
 }
