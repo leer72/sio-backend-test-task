@@ -1,0 +1,6 @@
+payment_processor.exception: Payment processor error
+coupon_service.bad_price: The discount exceeds the price of the product
+payment_processor.not_found: Payment processor not found
+product_%id%_not_found: Product %id% not found
+coupon_not_found: Coupon not found
+coupon_service.coupon_calculation.not_found: No service found to calculate discount

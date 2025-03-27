@@ -1,0 +1,11 @@
+dto.product.type: Значение должно быть целым числом
+dto.product.positive: Значение должно быть положительным числом
+
+dto.tax_number.not_blank: Налоговый номер не может быть пустым
+dto.tax_number.regex: Неправильный формат налогового номера
+
+dto.coupon_code.type: Код купона должен быть строкой
+dto.coupon_code.coupon_code: Неверный формат кода купона
+
+dto.payment_processor.not_blank: Не указан платежный процессор
+dto.payment_processor.choice: Неверный платежный процессор

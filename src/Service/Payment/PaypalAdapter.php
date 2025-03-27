@@ -2,6 +2,7 @@
 
 namespace App\Service\Payment;
 
+use App\Enum\PaymentProcessors;
 use App\Exception\PaymentException;
 use Exception;
 use Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor;
@@ -21,10 +22,14 @@ class PaypalAdapter implements PaymentInterface
     public function processPayment(float $price): void
     {
         try {
-            $this->paymentProcessor->pay((int) round($price));
+            $this->paymentProcessor->pay(round($price * 100));
         } catch (Exception $exception) {
-            throw new PaymentException($exception->getMessage());
+            throw new PaymentException();
         }
+    }
 
+    public function support(PaymentProcessors $paymentProcessor): bool
+    {
+        return $paymentProcessor === PaymentProcessors::PAYPAL;
     }
 }

@@ -7,19 +7,9 @@ use App\Repository\Coupon\CouponRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-define('COUPON_DISCRIMINATOR', [
-    CouponType::PERCENT_DISCOUNT->value => PercentDiscountCoupon::class,
-    CouponType::FIXED_DISCOUNT->value => FixedDiscountCoupon::class,
-]);
-
 #[ORM\Entity(repositoryClass: CouponRepository::class)]
-#[ORM\InheritanceType('SINGLE_TABLE')]
-#[ORM\DiscriminatorColumn(name: 'discount_type', type: Types::STRING)]
-#[ORM\DiscriminatorMap(COUPON_DISCRIMINATOR)]
-abstract class Coupon
+class Coupon
 {
-    public const array COUPON_DISCRIMINATOR_MAP = COUPON_DISCRIMINATOR;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,9 +18,15 @@ abstract class Coupon
     #[ORM\Column]
     protected int $value;
 
-    public function __construct(int $value)
-    {
+    #[ORM\Column(type: Types::STRING, enumType: CouponType::class)]
+    private CouponType $type;
+
+    public function __construct(
+        int $value,
+        CouponType $type,
+    ) {
         $this->value = $value;
+        $this->type = $type;
     }
 
     public function getId(): int
@@ -50,5 +46,15 @@ abstract class Coupon
         return $this;
     }
 
-    abstract public function calcDiscount(int $price): float;
+    public function getType(): CouponType
+    {
+      return $this->type;
+    }
+
+    public function setType(CouponType $type): Coupon
+    {
+      $this->type = $type;
+
+      return $this;
+    }
 }

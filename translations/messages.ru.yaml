@@ -1,0 +1,6 @@
+payment_processor.exception: Ошибка платежного процессора
+coupon_service.bad_price: Скидка превышает цену товара
+payment_processor.not_found: Платежный процессор не найден
+product_%id%_not_found: Товар %id% не найден
+coupon_not_found: Купон не найден
+coupon_service.coupon_calculation.not_found: Не найден сервис для расчета скидки

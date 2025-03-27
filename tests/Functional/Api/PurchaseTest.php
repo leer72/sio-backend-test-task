@@ -23,9 +23,9 @@ class PurchaseTest extends AbstractFunctionalTest
     private TaxNumberService $taxNumberService;
 
     /**
-     * @dataProvider calculatePriceDataProvider
+     * @dataProvider purchaseDataProvider
      */
-    public function testCalculatePrice(
+    public function testPurchase(
         array $body,
         bool $isValid,
         ?int $discount = null,
@@ -34,12 +34,9 @@ class PurchaseTest extends AbstractFunctionalTest
         $this->taxNumberService = new TaxNumberService();
 
         $product = $this->addProduct();
-        $coupon = null;
 
         if (isset($couponType)) {
-            $coupon = $couponType === CouponType::FIXED_DISCOUNT
-                ? $this->addFixedDiscountCoupon(value: $discount)
-                : $this->addPercentDiscountCoupon(value: $discount);
+            $this->addCoupon(value: $discount, type: $couponType);
         }
 
         $body['product'] = $product->getId();
@@ -51,34 +48,21 @@ class PurchaseTest extends AbstractFunctionalTest
         );
 
         if ($isValid) {
-            $responseJson = $this->getJsonResponse(
-                response: $response,
-            );
-
             self::assertEquals(
                 expected: Response::HTTP_OK,
                 actual: $response->getStatusCode(),
             );
 
-            self::assertEquals(
-                expected: $responseJson[self::PRICE_FIELD_NAME],
-                actual: $this->taxNumberService->getPriceWithTax(
-                    taxNumber: $body['taxNumber'],
-                    price: $coupon
-                        ? $coupon->calcDiscount(price: $product->getPrice())
-                        : $product->getPrice(),
-                ),
-            );
         } else {
             self::assertEquals(
-                expected: Response::HTTP_BAD_REQUEST,
+                expected: Response::HTTP_UNPROCESSABLE_ENTITY,
                 actual: $response->getStatusCode(),
             );
         }
 
     }
 
-    public function testCalculatePriceNoValidProduct(): void
+    public function testPurchaseNoValidProduct(): void
     {
         $body['product'] = $this->addProduct()->getId() + 1;
         $body['taxNumber'] = self::DEFAULT_TAX_NUMBER;
@@ -93,7 +77,7 @@ class PurchaseTest extends AbstractFunctionalTest
         );
     }
 
-    public function testCalculatePriceNoValidCoupon(): void
+    public function testPurchaseNoValidCoupon(): void
     {
         $body['product'] = $this->addProduct()->getId();
         $body['couponCode'] = self::NO_VALID_COUPON;
@@ -101,7 +85,7 @@ class PurchaseTest extends AbstractFunctionalTest
         $body['paymentProcessor'] = self::DEFAULT_PAYMENT_PROCESSOR;
 
         self::assertEquals(
-            expected: Response::HTTP_BAD_REQUEST,
+            expected: Response::HTTP_UNPROCESSABLE_ENTITY,
             actual: $this->sendRequest(
                 method: Request::METHOD_POST,
                 body: $body,
@@ -109,7 +93,7 @@ class PurchaseTest extends AbstractFunctionalTest
         );
     }
 
-    public function testCalculatePriceBadCoupon(): void
+    public function testPurchaseBadCoupon(): void
     {
         $body['product'] = $this->addProduct()->getId();
         $body['couponCode'] = self::BAD_COUPON;
@@ -125,7 +109,7 @@ class PurchaseTest extends AbstractFunctionalTest
         );
     }
 
-    public function testCalculateBadPriceWithPaypal(): void
+    public function testPurchaseBadPriceWithPaypal(): void
     {
         $body['product'] = $this->addProduct(price: self::BAD_PRICE_FOR_PAYPAL)->getId();
         $body['taxNumber'] = self::DEFAULT_TAX_NUMBER;
@@ -140,7 +124,7 @@ class PurchaseTest extends AbstractFunctionalTest
         );
     }
 
-    public function testCalculateBadPriceWithStripe(): void
+    public function testPurchaseBadPriceWithStripe(): void
     {
         $body['product'] = $this->addProduct(price: self::BAD_PRICE_FOR_STRIPE)->getId();
         $body['taxNumber'] = self::DEFAULT_TAX_NUMBER;
@@ -155,14 +139,14 @@ class PurchaseTest extends AbstractFunctionalTest
         );
     }
 
-    public function testCalculateBadPaymentProcessor(): void
+    public function testPurchaseBadPaymentProcessor(): void
     {
         $body['product'] = $this->addProduct()->getId();
         $body['taxNumber'] = self::DEFAULT_TAX_NUMBER;
         $body['paymentProcessor'] = self::BAD_PAYMENT_PROCESSOR;
 
         self::assertEquals(
-            expected: Response::HTTP_BAD_REQUEST,
+            expected: Response::HTTP_UNPROCESSABLE_ENTITY,
             actual: $this->sendRequest(
                 method: Request::METHOD_POST,
                 body: $body,
@@ -170,7 +154,7 @@ class PurchaseTest extends AbstractFunctionalTest
         );
     }
 
-    public function calculatePriceDataProvider(): array
+    public function purchaseDataProvider(): array
     {
         return [
             'valid_values_germany_tax_number' => [

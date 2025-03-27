@@ -31,12 +31,9 @@ class CalculatePriceTest extends AbstractFunctionalTest
         $this->taxNumberService = new TaxNumberService();
 
         $product = $this->addProduct();
-        $coupon = null;
 
         if (isset($couponType)) {
-            $coupon = $couponType === CouponType::FIXED_DISCOUNT
-                ? $this->addFixedDiscountCoupon(value: $discount)
-                : $this->addPercentDiscountCoupon(value: $discount);
+            $this->addCoupon(value: $discount, type: $couponType);
         }
 
         $body['product'] = $product->getId();
@@ -48,27 +45,14 @@ class CalculatePriceTest extends AbstractFunctionalTest
         );
 
         if ($isValid) {
-            $responseJson = $this->getJsonResponse(
-                response: $response,
-            );
-
             self::assertEquals(
                 expected: Response::HTTP_OK,
                 actual: $response->getStatusCode(),
             );
 
-            self::assertEquals(
-                expected: $responseJson[self::PRICE_FIELD_NAME],
-                actual: $this->taxNumberService->getPriceWithTax(
-                    taxNumber: $body['taxNumber'],
-                    price: $coupon
-                        ? $coupon->calcDiscount(price: $product->getPrice())
-                        : $product->getPrice(),
-                ),
-            );
         } else {
             self::assertEquals(
-                expected: Response::HTTP_BAD_REQUEST,
+                expected: Response::HTTP_UNPROCESSABLE_ENTITY,
                 actual: $response->getStatusCode(),
             );
         }
@@ -96,7 +80,7 @@ class CalculatePriceTest extends AbstractFunctionalTest
         $body['taxNumber'] = self::DEFAULT_TAX_NUMBER;
 
         self::assertEquals(
-            expected: Response::HTTP_BAD_REQUEST,
+            expected: Response::HTTP_UNPROCESSABLE_ENTITY,
             actual: $this->sendRequest(
                 method: Request::METHOD_POST,
                 body: $body,

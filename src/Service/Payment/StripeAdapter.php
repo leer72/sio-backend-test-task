@@ -2,13 +2,12 @@
 
 namespace App\Service\Payment;
 
+use App\Enum\PaymentProcessors;
 use App\Exception\PaymentException;
 use Systemeio\TestForCandidates\PaymentProcessor\StripePaymentProcessor;
 
 class StripeAdapter implements PaymentInterface
 {
-    const string ERROR_MESSAGE = 'Не удалось совершить оплату';
-
     private StripePaymentProcessor $stripePaymentProcessor;
 
     public function __construct() {
@@ -21,7 +20,12 @@ class StripeAdapter implements PaymentInterface
     public function processPayment(float $price): void
     {
         if (!$this->stripePaymentProcessor->processPayment($price)) {
-            throw new PaymentException(self::ERROR_MESSAGE);
+            throw new PaymentException();
         }
+    }
+
+    public function support(PaymentProcessors $paymentProcessor): bool
+    {
+        return $paymentProcessor === PaymentProcessors::STRIPE;
     }
 }

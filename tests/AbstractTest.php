@@ -33,7 +33,10 @@ class AbstractTest extends WebTestCase
         ?array $params = [],
         ?array $body = null,
         ?string $url = null,
-        ?array $headers = [],
+        ?array $headers = [
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+            ],
     ): Response {
         $url = !is_null($url) ? self::URL . $url : self::URL . static::URL;
 

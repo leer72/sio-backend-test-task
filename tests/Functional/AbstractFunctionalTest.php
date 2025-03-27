@@ -8,6 +8,7 @@ use App\DataFixtures\Coupon\PercentDiscountCouponFixture;
 use App\DataFixtures\Product\ProductFixture;
 use App\Entity\Coupon\Coupon;
 use App\Entity\Product;
+use App\Enum\CouponType;
 use App\Tests\AbstractTest;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManager;
@@ -44,21 +45,14 @@ class AbstractFunctionalTest extends AbstractTest
         return $product->getProduct();
     }
 
-    protected function addFixedDiscountCoupon(
+    protected function addCoupon(
         ?int $value = null,
+        ?CouponType $type = null,
     ): Coupon {
-        return $this->setCouponData(new FixedDiscountCouponFixture(), $value);
-    }
+        $coupon = new CouponFixture();
 
-    protected function addPercentDiscountCoupon(
-        ?int $value = null,
-    ): Coupon {
-        return $this->setCouponData(new PercentDiscountCouponFixture(), $value);
-    }
-
-    private function setCouponData(CouponFixture $coupon, ?int $value): Coupon
-    {
         $coupon = is_null($value) ? $coupon : $coupon->setValue($value);
+        $coupon = is_null($type) ? $coupon : $coupon->setType($type);
 
         $this->loadFixture($coupon);
 
